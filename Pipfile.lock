@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "95222c75a367698c7dbdef862ee86cca0c99b8793a7bc99f55ddedb665966c64"
+            "sha256": "bc8c63d0a6d40f34cbac6a5ded363321018f9f60812e1019650e10fa36dcad16"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -213,6 +213,10 @@
                 "sha256:ddb0b1d8243e6e3abb822bd14e447a89f4ab7439342912d590444831fa00b6a0"
             ],
             "version": "==2.15.3"
+        },
+        "gekitai": {
+            "editable": true,
+            "path": "."
         },
         "gym": {
             "hashes": [

@@ -8,6 +8,7 @@ jupyter = "*"
 gym = "*"
 pygame = "*"
 scipy = "*"
+gekitai = {editable = true, path = "."}
 
 [dev-packages]
 
