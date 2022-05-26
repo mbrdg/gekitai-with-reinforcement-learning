@@ -118,3 +118,5 @@ def is_over(board):
 
         if p1_rows or p2_rows:
             return True
+
+    return False
