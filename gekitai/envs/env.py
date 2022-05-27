@@ -13,7 +13,7 @@ class GekitaiEnv(gym.Env):
     def __init__(self, render_mode=None, size=4):
         assert render_mode in self.metadata['render_modes'] or render_mode is None
 
-        self.action_space = spaces.Discrete(size * size)
+        self.action_space = spaces.Dict({'x': spaces.Discrete(size), 'y': spaces.Discrete(size)})
         self.observation_space = spaces.Box(low=0, high=2, shape=(size, size), dtype=np.uint8)
 
         self.size = size
@@ -39,10 +39,9 @@ class GekitaiEnv(gym.Env):
 
     # TODO: calculate, reward and improve information
     def step(self, action):
-        moves = logic.actions(self.board)
-        action = moves[action % len(moves)]
 
-        self.board = logic.move(self.board, self.player, action)
+        # FIXME: Do not run this move if space is not empty
+        self.board = logic.move(self.board, self.player, np.array([action['x'], action['y']]))
         self.player = next(self.player_switch)
 
         done = logic.is_over(self.board)
