@@ -14,7 +14,7 @@ class GekitaiEnv(gym.Env):
         assert render_mode in self.metadata['render_modes'] or render_mode is None
 
         self.action_space = spaces.Dict({'x': spaces.Discrete(size), 'y': spaces.Discrete(size)})
-        self.observation_space = spaces.Box(low=0, high=2, shape=(size, size), dtype=np.uint8)
+        self.observation_space = spaces.Box(low=0, high=2, shape=(size**2,), dtype=np.uint8)
 
         self.board = np.zeros((size, size), dtype=np.uint8)
         self.player_switch = itertools.cycle(range(1, 3))
@@ -39,7 +39,7 @@ class GekitaiEnv(gym.Env):
         self.player_switch = itertools.cycle(range(1, 3))
         self.player = next(self.player_switch)
 
-        return self.board
+        return self.board.flatten()
 
     def step(self, action):
 
@@ -54,8 +54,9 @@ class GekitaiEnv(gym.Env):
 
         done, info = logic.is_over(self.board, config)
         reward = logic.reward(self.board, config)
+        info['reward'] = reward
 
-        return self.board, reward, done, info
+        return self.board.flatten(), reward, done, info
 
     def render(self, mode='human'):
         import pygame

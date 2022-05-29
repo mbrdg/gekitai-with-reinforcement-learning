@@ -98,7 +98,7 @@ kernels = {'V': np.ones((1, 3), dtype=np.uint8),
            'LD': np.fliplr(np.eye(3, dtype=np.uint8))}
 
 
-def reward(board, config, *, invert=False, threat_weight=1.0, marker_weight=1.0):
+def reward(board, config, *, invert=False):
     """Calculates the reward given a board.
     In this case positive scores means that Player 1 has an advantage over its opponent.
     Nevertheless, it is possible to invert the reward value by passing invert=True.
@@ -108,13 +108,9 @@ def reward(board, config, *, invert=False, threat_weight=1.0, marker_weight=1.0)
     board : ndarray
         Current board according to the state of the game
     config : dict
-        Set of parameters that describe some game rules
+        Set of parameters that describes the rules of the game
     invert : bool
         If True, then a positive score means that Player 2 has an advantage over Player 1
-    threat_weight : float
-        Weight for a threat
-    marker_weight : float
-        Weight for a marker
 
     Returns
     -------
@@ -122,11 +118,22 @@ def reward(board, config, *, invert=False, threat_weight=1.0, marker_weight=1.0)
         Reward value for the current board state
     """
 
-    def threat_calc(p):
-        return sum((convolve2d(board == p, kernel, mode='valid') == config['win'] - 1).any() for kernel in kernels)
+    def build_spaces_weights(size):
+        center = size // 2
+        weights = np.zeros(shape=(size, size))
 
-    threats = (threat_calc(1) - threat_calc(2)) * threat_weight
-    placed = (np.count_nonzero(board == 1) - np.count_nonzero(board == 2)) * marker_weight
+        for i in range(size):
+            for j in range(size):
+                weights[i, j] = max(abs(center - i), abs(center - j))
+
+        return weights
+
+    def threat_calc(p):
+        return sum((convolve2d(board == p, k, mode='valid') == config['win'] - 1).any() for k in kernels.values())
+
+    space_weights = build_spaces_weights(config['size'])
+    placed = np.sum((board == 1) * space_weights) - np.sum((board == 2) * space_weights)
+    threats = (threat_calc(1) - threat_calc(2))
 
     return -(placed + threats) if invert else (placed + threats)
 
