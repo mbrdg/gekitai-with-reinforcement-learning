@@ -67,13 +67,15 @@ def move(board, player, pos):
     return board
 
 
-def actions(board):
+def actions(board, *, shuffle=False):
     """Retrieves all the possible actions from a board
 
     Parameters
     ----------
     board : ndarray
         Current board according to the state of the game
+    shuffle : bool
+        Shuffles the provided array of possible actions
 
     Returns
     -------
@@ -81,7 +83,13 @@ def actions(board):
         An array containing all the possible actions
     """
 
-    return np.argwhere(board == 0)
+    acts = np.argwhere(board == 0)
+
+    if shuffle:
+        rng = np.random.default_rng()
+        return rng.shuffle(acts)
+
+    return acts
 
 
 kernels = {'V': np.ones((1, 3), dtype=np.uint8),
@@ -90,33 +98,68 @@ kernels = {'V': np.ones((1, 3), dtype=np.uint8),
            'LD': np.fliplr(np.eye(3, dtype=np.uint8))}
 
 
-def is_over(board):
+def reward(board, config, *, invert=False, threat_weight=1.0, marker_weight=1.0):
+    """Calculates the reward given a board.
+    In this case positive scores means that Player 1 has an advantage over its opponent.
+    Nevertheless, it is possible to invert the reward value by passing invert=True.
+
+    Parameters
+    ----------
+    board : ndarray
+        Current board according to the state of the game
+    config : dict
+        Set of parameters that describe some game rules
+    invert : bool
+        If True, then a positive score means that Player 2 has an advantage over Player 1
+    threat_weight : float
+        Weight for a threat
+    marker_weight : float
+        Weight for a marker
+
+    Returns
+    -------
+    flaat
+        Reward value for the current board state
+    """
+
+    def threat_calc(p):
+        return sum((convolve2d(board == p, kernel, mode='valid') == config['win'] - 1).any() for kernel in kernels)
+
+    threats = (threat_calc(1) - threat_calc(2)) * threat_weight
+    placed = (np.count_nonzero(board == 1) - np.count_nonzero(board == 2)) * marker_weight
+
+    return -(placed + threats) if invert else (placed + threats)
+
+
+def is_over(board, config):
     """Determines if the current game state is over or not
 
     Parameters
     ----------
     board : ndarray
         Current board according to the state of the game
+    config : dict
+        Set of parameters that describe some game rules
 
     Returns
     -------
     bool
         A boolean that tells if the game is over or not
+    info
+        A description of the outcome of detecting if the game is over
     """
 
     # Determine if a player already placed its markers
-    p1_placed = np.count_nonzero(board == 1) >= 8
-    p2_placed = np.count_nonzero(board == 2) >= 8
-
-    if p1_placed or p2_placed:
-        return True
+    if np.count_nonzero(board == 1) >= config['markers']:
+        return True, {'over': 'Player 1 won by placing all of their markers'}
+    if np.count_nonzero(board == 2) >= config['markers']:
+        return True, {'over': 'Player 2 won by placing all of their markers'}
 
     # Check if a player has 3 adjacent markers
     for kernel in kernels.values():
-        p1_rows = (convolve2d(board == 1, kernel, mode='valid') == 3).any()
-        p2_rows = (convolve2d(board == 2, kernel, mode='valid') == 3).any()
+        if (convolve2d(board == 1, kernel, mode='valid') == 3).any():
+            return True, {'over': 'Player 1 won by placing at least 3 adjacent markers'}
+        if (convolve2d(board == 2, kernel, mode='valid') == 3).any():
+            return True, {'over': 'Player 2 won by placing at least 3 adjacent markers'}
 
-        if p1_rows or p2_rows:
-            return True
-
-    return False
+    return False, {'over': 'The game is not yet over'}

@@ -1,7 +1,7 @@
 import itertools
 
-import numpy as np
 import gym
+import numpy as np
 from gym import spaces
 
 from . import logic
@@ -10,16 +10,17 @@ from . import logic
 class GekitaiEnv(gym.Env):
     metadata = {'render_modes': ['human', 'rgb_array'], 'render_fps': 5}
 
-    def __init__(self, render_mode=None, size=4):
+    def __init__(self, render_mode=None, size=4, max_markers=6, win_condition=3):
         assert render_mode in self.metadata['render_modes'] or render_mode is None
 
         self.action_space = spaces.Dict({'x': spaces.Discrete(size), 'y': spaces.Discrete(size)})
         self.observation_space = spaces.Box(low=0, high=2, shape=(size, size), dtype=np.uint8)
 
-        self.size = size
         self.board = np.zeros((size, size), dtype=np.uint8)
         self.player_switch = itertools.cycle(range(1, 3))
         self.player = next(self.player_switch)
+
+        self.size, self.max_markers, self.win_condition = size, max_markers, win_condition
 
         if render_mode == 'human':
             import pygame
@@ -35,18 +36,24 @@ class GekitaiEnv(gym.Env):
         super().reset(seed=seed)
 
         self.board = np.zeros((self.size, self.size), dtype=np.uint8)
+        self.player_switch = itertools.cycle(range(1, 3))
+        self.player = next(self.player_switch)
+
         return self.board
 
-    # TODO: calculate, reward and improve information
     def step(self, action):
 
-        # FIXME: Do not run this move if space is not empty
+        # Do not run move() if the space is not empty, returns an invalid action reward
+        if self.board[action['x'], action['y']] != 0:
+            return self.board, -100, False, {'invalid': 'Tried to play in a occupied space'}
+
         self.board = logic.move(self.board, self.player, np.array([action['x'], action['y']]))
         self.player = next(self.player_switch)
 
-        done = logic.is_over(self.board)
-        reward = 0.0
-        info = dict()
+        config = {'size': self.size, 'markers': self.max_markers, 'win': self.win_condition}
+
+        done, info = logic.is_over(self.board, config)
+        reward = logic.reward(self.board, config)
 
         return self.board, reward, done, info
 
