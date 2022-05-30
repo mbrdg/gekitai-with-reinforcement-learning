@@ -32,9 +32,7 @@ class GekitaiEnv(gym.Env):
             self.window = pygame.display.set_mode(size=(self.window_size, self.window_size))
             self.clock = pygame.time.Clock()
 
-    def reset(self, *, seed=None, return_info=False, options=None):
-        super().reset(seed=seed)
-
+    def reset(self):
         self.board = np.zeros(shape=(self.board_size, self.board_size), dtype=np.uint8)
         self.player_switch = itertools.cycle(range(1, 3))
         self.player = next(self.player_switch)
@@ -45,7 +43,7 @@ class GekitaiEnv(gym.Env):
         i, j = action // self.board_size, action % self.board_size
 
         if self.board[i, j] != 0:
-            return self.board, -10, False, {'description': 'Invalid action chosen'}
+            return self.board.flatten(), -10, False, {'description': 'Invalid action chosen'}
 
         self.board = move(self.board, self.player, np.array([i, j]))
         self.player = next(self.player_switch)
