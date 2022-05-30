@@ -5,9 +5,13 @@ OpenAI gym for reinforcement learning
 
 ## Dependencies
 
-The required dependecies are specified in the `requirements.txt` file, meaning
+The required dependecies are specified in the `Pipfile` file, meaning
 it is only required to have [pipenv](https://pipenv.pypa.io/en/latest/)
 installed in the system.
+
+After the installation or if you already have 
+[pipenv](https://pipenv.pypa.io/en/latest/) run the commands below to install
+all the required dependencies:
 
 ```bash
 $ pipenv --python=3.10
