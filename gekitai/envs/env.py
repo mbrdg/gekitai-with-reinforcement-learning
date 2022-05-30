@@ -45,7 +45,7 @@ class GekitaiEnv(gym.Env):
         i, j = action // self.board_size, action % self.board_size
 
         if self.board[i, j] != 0:
-            return self.board, -10, False, {'desc': 'Invalid action chosen'}
+            return self.board, -10, False, {'description': 'Invalid action chosen'}
 
         self.board = move(self.board, self.player, np.array([i, j]))
         self.player = next(self.player_switch)
@@ -54,6 +54,8 @@ class GekitaiEnv(gym.Env):
         if done:
             return self.board.flatten(), 1, True, info
 
+        # Opponent move computation, tries to place markers in the middle of the board...
+        # Very simple, not very intelligent, but somewhat resource friendly
         rng = np.random.default_rng()
 
         board_weights = weights(self.board.shape)
@@ -79,11 +81,11 @@ class GekitaiEnv(gym.Env):
 
         pix_square_size = self.window_size / self.board_size
         for i, line in enumerate(self.board):
-            for j, slot in enumerate(line):
-                if not slot:
+            for j, space in enumerate(line):
+                if space == 0:
                     continue
 
-                color = (0, 0, 255) if slot == 1 else (255, 0, 0)
+                color = (0, 0, 255) if space == 1 else (255, 0, 0)
                 pygame.draw.circle(canvas, color, (np.array([i, j]) + 0.5) * pix_square_size, pix_square_size / 3)
 
         for x in range(self.board_size + 1):
