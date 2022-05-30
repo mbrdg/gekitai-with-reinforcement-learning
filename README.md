@@ -11,7 +11,7 @@ installed in the system.
 
 ```bash
 $ pipenv --python=3.10
-$ pip install -r requirements.txt
+$ pip install gym scipy pygame jupyter
 ```
 
 ## Contributors

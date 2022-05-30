@@ -4,6 +4,11 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
+jupyter = "*"
+gym = "*"
+pygame = "*"
+scipy = "*"
+gekitai = {editable = true, path = "."}
 
 [dev-packages]
 
