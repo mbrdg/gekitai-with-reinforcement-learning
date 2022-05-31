@@ -40,12 +40,10 @@ class GekitaiEnv(gym.Env):
         return self.board.flatten()
 
     def step(self, action):
-        i, j = action // self.board_size, action % self.board_size
+        possible_moves = actions(self.board)
+        agent_move = possible_moves[action % possible_moves.shape[0]]
 
-        if self.board[i, j] != 0:
-            return self.board.flatten(), -10, False, {'description': 'Invalid action chosen'}
-
-        self.board = move(self.board, self.player, np.array([i, j]))
+        self.board = move(self.board, self.player, agent_move)
         self.player = next(self.player_switch)
 
         done, info = is_over(self.board)
