@@ -123,7 +123,7 @@ RL algorithms.
 - After training our agent with DQN, PPO and A2C we reached several conclusions:
 
   - Looking at the average episode reward[^2] it is visible that DQN is the
-  algorithm with areward value closer to 1.
+  algorithm with a reward value closer to 1.
 
     - This means that the agent wins the majority of the episodes/games against
     its opponent who uses the developed heuristic.
