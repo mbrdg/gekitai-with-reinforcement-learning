@@ -108,7 +108,7 @@ def step(action):
 - A2C is a policy gradient algortihm and it is part of the on-policy family of
 RL algorithms.
 
-  - It consists of 2 networks the **actor** and the **critic** who work 
+  - It consists of 2 networks, the **actor** and the **critic** who work 
   together in order to solve a particular problem based on an advantage
   function which calculates the agent's temporal difference error.
   
@@ -136,8 +136,8 @@ RL algorithms.
   
   - Finally, both PPO and A2C had similar performance metrics.
 
-[^2]: [Graph with the average episode reward](https://user-images.githubusercontent.com/64497525/172134717-5d0e0ac8-108b-4afa-94d3-31a7df713df4.png)
-[^3]: [Graph with the average episode length](https://user-images.githubusercontent.com/64497525/172134056-1a777520-6dbe-4a70-9212-246b846f72de.png)
+[^2]: [Average episode reward plot](https://user-images.githubusercontent.com/64497525/172134717-5d0e0ac8-108b-4afa-94d3-31a7df713df4.png)
+[^3]: [Average episode length plot](https://user-images.githubusercontent.com/64497525/172134056-1a777520-6dbe-4a70-9212-246b846f72de.png)
 
 # References
 
