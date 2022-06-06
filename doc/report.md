@@ -118,6 +118,27 @@ RL algorithms.
 
 [^1]: [Article by Mike Wang](https://towardsdatascience.com/advantage-actor-critic-tutorial-mina2c-7a3249962fc8)
 
+## Conclusion
+
+- After training our agent with DQN, PPO and A2C we reached several conclusions:
+
+  - Looking at the average episode reward[^2] it is visible that DQN is the
+  algorithm with areward value closer to 1.
+
+    - This means that the agent wins the majority of the episodes/games against
+    its opponent who uses the developed heuristic.
+
+  - Looking at the average episode length[^3] it is also visible that DQN
+  episodes took a smaller number of moves.
+    
+    - In this particular case the agent learned to take advantage of playing in
+    the outter spaces!
+  
+  - Finally, both PPO and A2C had similar performance metrics.
+
+[^2]: [Graph with the average episode reward](https://user-images.githubusercontent.com/64497525/172134717-5d0e0ac8-108b-4afa-94d3-31a7df713df4.png)
+[^3]: [Graph with the average episode length](https://user-images.githubusercontent.com/64497525/172134056-1a777520-6dbe-4a70-9212-246b846f72de.png)
+
 # References
 
 - Some of the references for the work already carried out:
