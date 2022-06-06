@@ -18,6 +18,22 @@ $ pipenv --python=3.10
 $ pip install 'stable-baselines3[extra]' scipy jupyter
 ```
 
+## Candy Stuff :lollipop:
+
+Inside this [notebook](gekitai-with0rl.ipynb) there is already code that will
+generate models with the help of the RL algorithms. During that processing the
+Stable Baselines3 will also log to [TensorBoard](https://www.tensorflow.org/tensorboard)
+some graphs that you may find useful.
+
+For launching an instance of TensorBoard run the following commands:
+
+```bash
+$ pipenv shell
+$ tensorboard --logdir=logs
+```
+
+After that a link to localhost should appear, et voilà!
+
 ## Contributors
 
 - [João Sousa](mailto:up201904739@edu.fc.up.pt)
