@@ -1,4 +1,4 @@
-# gekitai-gym
+# Gekitai with Reiforcement Learning
 
 The [Gekitai](https://boardgamegeek.com/boardgame/295449/gekitai) game with
 OpenAI gym for reinforcement learning
